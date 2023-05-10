@@ -14,23 +14,19 @@ const Movies = () => {
 
     useEffect(() => async () => {
         if(!isFirstMount.current) {
-            console.log('CANSELED');
             return;
         };
 
         isFirstMount.current = false;
-        console.log("FIRST RENDER");
 
         if(valueSearch === '') {
             return;
         };
         const controller = new AbortController();
-        console.log(valueSearch);
         try {
             setIsLoading(true);
             const response = await fetchFilms('/3/search/movie', controller, valueSearch);
             setSearchFilms([...response.results]);
-            console.log(valueSearch);
         } catch(error) {
             console.log('OOps! Error loading information. Please, try again!');
         } finally {

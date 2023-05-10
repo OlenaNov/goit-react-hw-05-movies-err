@@ -13,7 +13,6 @@ const fetchFilms = async (typeRequest, controller, query) => {
             query,
         }
     });
-    console.log('made request');
     return request.data;
 };
 

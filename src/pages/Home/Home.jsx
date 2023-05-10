@@ -24,9 +24,7 @@ const Home = () => {
 
             
             return () => {
-                console.log('before');
                 controller.abort();
-                console.log('after');
             };
         }, []);
 
