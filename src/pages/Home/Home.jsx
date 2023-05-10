@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-// import {  useSearchParams } from "react-router-dom";
 import SyncLoader from "react-spinners/SyncLoader";
 import fetchFilms from '../../utilites/api';
 import ListTrendingFilms from "components/ListTrendingFilms";
@@ -7,16 +6,13 @@ import ListTrendingFilms from "components/ListTrendingFilms";
 const Home = () => {
     const [trendingFilms, setTrendingFilms] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
-    // const [searchParams] = useSearchParams();
-
-    // const filmId = searchParams.get("filmId") ?? "";
-// console.log(filmId);
 
     useEffect(() => async () => {
-
+            const controller = new AbortController();
             try {
+                
                 setIsLoading(true);
-                const response = await fetchFilms('/3/trending/movie/day');
+                const response = await fetchFilms('/3/trending/movie/day', controller);
                 setTrendingFilms([...response.results]);
 
             } catch (error) {
@@ -24,6 +20,13 @@ const Home = () => {
             } 
             finally {
                 setIsLoading(false);
+            };
+
+            
+            return () => {
+                console.log('before');
+                controller.abort();
+                console.log('after');
             };
         }, []);
 

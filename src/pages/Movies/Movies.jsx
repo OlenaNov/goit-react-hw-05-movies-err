@@ -1,59 +1,61 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { useSearchParams } from "react-router-dom";
 import SyncLoader from "react-spinners/SyncLoader";
 import fetchFilms from '../../utilites/api';
 import SearchForm from 'components/SearchForm';
 import ListSearchFilms from 'components/ListSearchFilms';
-import { useRef } from "react";
 
 const Movies = () => {
-    const [query, setQuery] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [searchFilms, setSearchFilms] = useState([]);
-    const state = useRef(searchFilms.length ?? searchFilms);
+    const [searchValue, setSearchValue] = useSearchParams();
+    const valueSearch = searchValue.get('value');
+    const isFirstMount = useRef(true);
 
-    const handleSubmit = async value => {
+    useEffect(() => async () => {
+        if(!isFirstMount.current) {
+            console.log('CANSELED');
+            return;
+        };
+
+        isFirstMount.current = false;
+        console.log("FIRST RENDER");
+
+        if(valueSearch === '') {
+            return;
+        };
+        const controller = new AbortController();
+        console.log(valueSearch);
         try {
-            setQuery(value);
             setIsLoading(true);
-            const response = await fetchFilms('/3/search/movie', value);
+            const response = await fetchFilms('/3/search/movie', controller, valueSearch);
             setSearchFilms([...response.results]);
-            state.current = searchFilms;
+            console.log(valueSearch);
         } catch(error) {
             console.log('OOps! Error loading information. Please, try again!');
         } finally {
             setIsLoading(false);
         };
-    };
 
-    // useEffect(() => async () => {
-    //     // const controller = new AbortController();
-    //     try {
-            
-    //         if(query === '') {
-    //             return;
-    //         };
-    //         setIsLoading(true);
-    //         const response = await fetchFilms('/3/search/movie', query);
-    //         console.log(response);
-    //         setSearchFilms([...response.results]);
-    //         console.log('MAKE');
-    //     } catch (error) {
-    //         console.log('OOps! Error loading information. Please, try again!');
-    //     } finally {
-    //         setIsLoading(false);
-    //     };
+        return () => controller.abort();
 
-        // console.log(searchFilms);
+    }, [valueSearch]);
 
-        // const response = await fetchFilms('/3/search/movie', query);
-        // setSearchFilms([...response.results]);
-        // console.log(response);
+    
+    const handleSubmit = async value => {
+        setSearchValue({ value });
+                const controller = new AbortController();
 
-        // return () => {
-        //     controller.abort();
-        // };
-        
-    // }, [query]);
+        try {
+            setIsLoading(true);
+            const response = await fetchFilms('/3/search/movie', controller, value);
+            setSearchFilms([...response.results]);
+        } catch(error) {
+            console.log('OOps! Error loading information. Please, try again!');
+        } finally {
+            setIsLoading(false);
+        };
+};
 
     return (
         <>
@@ -61,7 +63,7 @@ const Movies = () => {
         <SearchForm 
             onSubmitForm={handleSubmit} 
         />
-        {query 
+        {searchFilms 
         ? <ListSearchFilms items={searchFilms} />
         : null}
     </>

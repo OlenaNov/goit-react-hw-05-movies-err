@@ -10,14 +10,19 @@ const Reviews = () => {
 
 
     useEffect(() => async () => {
+        const controller = new AbortController();
         try {
             setIsLoading(true);
-            const response = await fetchFilms(`/3/movie/${movieId}/reviews`);
+            const response = await fetchFilms(`/3/movie/${movieId}/reviews`, controller);
             setInfoReviews(response.results);
         } catch (error) {
             console.log('OOps! Error loading information. Please, try again!');
         } finally {
             setIsLoading(false);
+        };
+        
+        return () => {
+            controller.abort();
         };
     }, [movieId]);
 
@@ -32,10 +37,10 @@ const Reviews = () => {
                         <p>{item.content}</p>
                     </li>
                 )) }
-            </ul>) 
-        : <div>
-            <p>'We don`t have any reviews for this movie'</p>
-            </div>}
+            </ul>)
+            : (<div>
+                <p>'We don`t have any reviews for this movie'</p>
+                </div>)}
         </>
     );
 };

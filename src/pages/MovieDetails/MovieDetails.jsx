@@ -13,16 +13,20 @@ const MovieDetails = () => {
     const { movieId } = useParams();
 
     useEffect(() => async () => {
+        const controller = new AbortController();
             try {
                 setIsLoading(true);
-                const response = await fetchFilms(`/3/movie/${movieId}`);
+                const response = await fetchFilms(`/3/movie/${movieId}`, controller);
                 setInfoFilm(response);
             } catch (error) {
                 console.log('OOps! Error loading information. Please, try again!');
             } finally {
                 setIsLoading(false);
             };
+
+            return () => controller.abort();
     }, [movieId]);
+
 
     return (
     <>

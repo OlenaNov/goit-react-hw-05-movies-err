@@ -8,17 +8,21 @@ const Cast = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [infoCast, setInfoCast] = useState(null);
 
-
     useEffect(() => async () => {
+
+        const controller = new AbortController();
         try {
             setIsLoading(true);
-            const response = await fetchFilms(`/3/movie/${movieId}/credits`);
+            const response = await fetchFilms(`/3/movie/${movieId}/credits`, controller);
             setInfoCast(response);
         } catch (error) {
             console.log('OOps! Error loading information. Please, try again!');
         } finally {
             setIsLoading(false);
         };
+
+        return () => controller.abort();
+
     }, [movieId]);
 
     return (
@@ -30,7 +34,7 @@ const Cast = () => {
                     <li key={item.id}>
                         <img src={`https://image.tmdb.org/t/p/original/${item.profile_path}`} alt={item.name}  width='100px' min-height='150px' />
                         <h3>{item.name}</h3>
-                        <p>Character: {item.character}</p>
+                        {item.character && <p>Character: {item.character}</p>}
                     </li>
                 )) }
             </ul>

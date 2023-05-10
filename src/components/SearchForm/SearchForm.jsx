@@ -11,10 +11,10 @@ const SearchForm = ({ onSubmitForm }) => {
             Notify.failure('Please, write the name of the movie!');
             return;
         };
+
         onSubmitForm(valueInput);
         setValueInput('');
     };
-
 
     return (
         <Form
