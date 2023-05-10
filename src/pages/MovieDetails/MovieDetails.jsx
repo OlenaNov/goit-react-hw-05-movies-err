@@ -1,6 +1,7 @@
 import { Suspense, useEffect, useRef, useState } from "react";
 import { Outlet, useLocation, useParams } from "react-router-dom";
 import SyncLoader from "react-spinners/SyncLoader";
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import fetchFilms from "utilites/api";
 import { StyledLink } from "components/Reviews/Reviews.styled";
 import ItemMovie from "components/ItemMovie";
@@ -19,7 +20,7 @@ const MovieDetails = () => {
                 const response = await fetchFilms(`/3/movie/${movieId}`, controller);
                 setInfoFilm(response);
             } catch (error) {
-                console.log('OOps! Error loading information. Please, try again!');
+                Notify.failure('OOps! Error loading information. Please, try again!');
             } finally {
                 setIsLoading(false);
             };

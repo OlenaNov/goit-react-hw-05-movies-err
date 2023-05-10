@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 import SyncLoader from "react-spinners/SyncLoader";
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import fetchFilms from '../../utilites/api';
 import SearchForm from 'components/SearchForm';
 import ListSearchFilms from 'components/ListSearchFilms';
@@ -28,7 +29,7 @@ const Movies = () => {
             const response = await fetchFilms('/3/search/movie', controller, valueSearch);
             setSearchFilms([...response.results]);
         } catch(error) {
-            console.log('OOps! Error loading information. Please, try again!');
+            Notify.failure('OOps! Error loading information. Please, try again!');
         } finally {
             setIsLoading(false);
         };
@@ -47,7 +48,7 @@ const Movies = () => {
             const response = await fetchFilms('/3/search/movie', controller, value);
             setSearchFilms([...response.results]);
         } catch(error) {
-            console.log('OOps! Error loading information. Please, try again!');
+            Notify.failure('OOps! Error loading information. Please, try again!');
         } finally {
             setIsLoading(false);
         };

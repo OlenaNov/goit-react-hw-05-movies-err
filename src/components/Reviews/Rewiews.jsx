@@ -1,4 +1,5 @@
 import SyncLoader from "react-spinners/SyncLoader";
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import fetchFilms from "utilites/api";
@@ -16,7 +17,7 @@ const Reviews = () => {
             const response = await fetchFilms(`/3/movie/${movieId}/reviews`, controller);
             setInfoReviews(response.results);
         } catch (error) {
-            console.log('OOps! Error loading information. Please, try again!');
+            Notify.failure('OOps! Error loading information. Please, try again!');
         } finally {
             setIsLoading(false);
         };
